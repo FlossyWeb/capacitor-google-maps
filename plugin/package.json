@@ -1,6 +1,6 @@
 {
   "name": "@flossyweb/capacitor-google-maps",
-  "version": "6.0.1",
+  "version": "6.0.3-beta.1",
   "description": "Google maps on Capacitor",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
@@ -18,7 +18,7 @@
     "android/build.gradle",
     "dist/",
     "ios/Plugin/",
-    "CapacitorGoogleMaps.podspec"
+    "FlossywebCapacitorGoogleMaps.podspec"
   ],
   "author": "François Simon (SNS Solutions)",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "clean": "rimraf ./dist",
     "watch": "tsc --watch",
     "prepublishOnly": "pnpm run build",
-    "publish:cocoapod": "pod trunk push ./CapacitorGoogleMaps.podspec --allow-warnings",
+    "publish:cocoapod": "pod trunk push ./FlossywebCapacitorGoogleMaps.podspec --allow-warnings",
     "downleveldts": "pnpm downlevel-dts dist/typings dist/typings/ts_old --to=3.5",
     "pack-local": "pnpm run build && pnpm pack && find . -name 'capacitor-google-maps-*tgz' -exec bash -c 'mv $0 capacitor-google-maps.tgz' {} \\; ",
     "unittest:ios": "xcodebuild test -project ./unit-tests/ios/GoogleMapsPlugin/GoogleMapsPlugin.xcodeproj -scheme TestApp -destination 'platform=iOS Simulator,name=iPhone 12,OS=15.2' | xcpretty && exit ${PIPESTATUS[0]}",
