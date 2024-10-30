@@ -2,6 +2,12 @@
 
 Google maps on Capacitor
 
+## Publish
+To publish on npm you have to navigate inside plugin directory then you run :
+```bash
+npm publish
+```
+
 ## Install
 
 ```bash
@@ -300,6 +306,7 @@ export default MyMap;
 * [`disableTouch()`](#disabletouch)
 * [`enableClustering(...)`](#enableclustering)
 * [`disableClustering()`](#disableclustering)
+* [`addTileOverlay(...)`](#addtileoverlay)
 * [`addMarker(...)`](#addmarker)
 * [`addMarkers(...)`](#addmarkers)
 * [`removeMarker(...)`](#removemarker)
@@ -319,6 +326,7 @@ export default MyMap;
 * [`enableAccessibilityElements(...)`](#enableaccessibilityelements)
 * [`enableCurrentLocation(...)`](#enablecurrentlocation)
 * [`setPadding(...)`](#setpadding)
+* [`getMapBounds()`](#getmapbounds)
 * [`fitBounds(...)`](#fitbounds)
 * [`setOnBoundsChangedListener(...)`](#setonboundschangedlistener)
 * [`setOnCameraIdleListener(...)`](#setoncameraidlelistener)
@@ -397,6 +405,19 @@ enableClustering(minClusterSize?: number | undefined) => Promise<void>
 ```typescript
 disableClustering() => Promise<void>
 ```
+
+--------------------
+
+
+### addTileOverlay(...)
+
+```typescript
+addTileOverlay(tiles: TileOverlay) => Promise<void>
+```
+
+| Param       | Type                                                |
+| ----------- | --------------------------------------------------- |
+| **`tiles`** | <code><a href="#tileoverlay">TileOverlay</a></code> |
 
 --------------------
 
@@ -650,6 +671,19 @@ setPadding(padding: MapPadding) => Promise<void>
 | Param         | Type                                              |
 | ------------- | ------------------------------------------------- |
 | **`padding`** | <code><a href="#mappadding">MapPadding</a></code> |
+
+--------------------
+
+
+### getMapBounds()
+
+```typescript
+getMapBounds() => Promise<LatLngBounds>
+```
+
+Get the map's current viewport latitude and longitude bounds.
+
+**Returns:** <code>Promise&lt;LatLngBounds&gt;</code>
 
 --------------------
 
@@ -933,6 +967,20 @@ An interface representing a pair of latitude and longitude coordinates.
 | Prop        | Type                |
 | ----------- | ------------------- |
 | **`mapId`** | <code>string</code> |
+
+
+#### TileOverlay
+
+For web, all the javascript <a href="#tileoverlay">TileOverlay</a> options are available as
+For iOS and Android only the config options declared on <a href="#tileoverlay">TileOverlay</a> are available.
+
+| Prop          | Type                                                           |
+| ------------- | -------------------------------------------------------------- |
+| **`getTile`** | <code>(x: number, y: number, zoom: number) =&gt; string</code> |
+| **`opacity`** | <code>number</code>                                            |
+| **`visible`** | <code>boolean</code>                                           |
+| **`zIndex`**  | <code>number</code>                                            |
+| **`debug`**   | <code>boolean</code>                                           |
 
 
 #### Marker
