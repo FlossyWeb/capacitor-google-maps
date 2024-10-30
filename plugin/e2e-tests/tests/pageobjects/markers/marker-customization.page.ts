@@ -33,7 +33,7 @@ class MarkerCustomizations extends Page {
 
   get commandOutputTextarea() {
     return new IonicTextarea('#commandOutput');
-}
+  }
 }
 
 export default new MarkerCustomizations();

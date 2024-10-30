@@ -1,5 +1,5 @@
 {
-  "name": "@capacitor/google-maps",
+  "name": "@flossyweb/capacitor-google-maps",
   "version": "6.0.1",
   "description": "Google maps on Capacitor",
   "main": "dist/plugin.cjs.js",
@@ -20,14 +20,14 @@
     "ios/Plugin/",
     "CapacitorGoogleMaps.podspec"
   ],
-  "author": "Ionic <hi@ionicframework.com>",
+  "author": "François Simon (SNS Solutions)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ionic-team/capacitor-google-maps.git"
+    "url": "git+https://github.com/FlossyWeb/capacitor-google-maps.git"
   },
   "bugs": {
-    "url": "https://github.com/ionic-team/capacitor-google-maps/issues"
+    "url": "https://github.com/FlossyWeb/capacitor-google-maps/issues"
   },
   "keywords": [
     "capacitor",
@@ -41,6 +41,7 @@
     "verify:android": "cd android && ./gradlew clean build test && cd ..",
     "verify:web": "pnpm run build",
     "lint": "pnpm eslint . --ext ts && pnpm prettier \"./**/*.{css,html,ts,js,java}\" --check && pnpm node-swiftlint lint",
+    "lint:fix": "pnpm prettier \"./**/*.{css,html,ts,js,java}\" --write",
     "fmt": "pnpm eslint . --ext ts --fix && pnpm prettier \"./**/*.{css,html,ts,js,java}\" --write && pnpm node-swiftlint --fix --format",
     "docgen": "docgen --api GoogleMapInterface --output-readme README.md --output-json dist/docs.json",
     "build": "pnpm run clean && pnpm run docgen && tsc && rollup -c rollup.config.js && pnpm run downleveldts",

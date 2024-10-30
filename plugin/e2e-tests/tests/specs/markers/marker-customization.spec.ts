@@ -27,11 +27,7 @@ describe('Google Maps - Marker Customization', function () {
     const createMapButton = await MarkerCustomizations.createMapButton;
     const removeAllMarkersButton = await MarkerCustomizations.removeAllMarkersButton;
     const addColorMarkerButton = await MarkerCustomizations.addMarkerColorButton;
-    const commandOutput = await $(
-      (
-        await MarkerCustomizations.commandOutputTextarea
-      ).selector,
-    ).$('textarea');
+    const commandOutput = await $((await MarkerCustomizations.commandOutputTextarea).selector).$('textarea');
 
     await createMapButton.tap();
     await pause(500);
@@ -50,11 +46,7 @@ describe('Google Maps - Marker Customization', function () {
     const createMapButton = await MarkerCustomizations.createMapButton;
     const removeAllMarkersButton = await MarkerCustomizations.removeAllMarkersButton;
     const addImageMarkerButton = await MarkerCustomizations.addMarkerImageButton;
-    const commandOutput = await $(
-      (
-        await MarkerCustomizations.commandOutputTextarea
-      ).selector,
-    ).$('textarea');
+    const commandOutput = await $((await MarkerCustomizations.commandOutputTextarea).selector).$('textarea');
 
     await createMapButton.tap();
     await pause(500);
@@ -72,11 +64,7 @@ describe('Google Maps - Marker Customization', function () {
   it('should add 1 image marker', async function () {
     const removeAllMarkersButton = await MarkerCustomizations.removeAllMarkersButton;
     const addImageMarkerButton = await MarkerCustomizations.addMarkerImageButton;
-    const commandOutput = await $(
-      (
-        await MarkerCustomizations.commandOutputTextarea
-      ).selector,
-    ).$('textarea');
+    const commandOutput = await $((await MarkerCustomizations.commandOutputTextarea).selector).$('textarea');
 
     await addImageMarkerButton.tap();
     await pause(500);
@@ -90,11 +78,7 @@ describe('Google Maps - Marker Customization', function () {
   it('should add 4 image markers', async function () {
     const removeAllMarkersButton = await MarkerCustomizations.removeAllMarkersButton;
     const addMultipleImageMarkersButton = await MarkerCustomizations.addMultipleImageMarkersButton;
-    const commandOutput = await $(
-      (
-        await MarkerCustomizations.commandOutputTextarea
-      ).selector,
-    ).$('textarea');
+    const commandOutput = await $((await MarkerCustomizations.commandOutputTextarea).selector).$('textarea');
 
     await addMultipleImageMarkersButton.tap();
     await pause(500);
@@ -108,11 +92,7 @@ describe('Google Maps - Marker Customization', function () {
   it('should add 4 color markers', async function () {
     const removeAllMarkersButton = await MarkerCustomizations.removeAllMarkersButton;
     const addMultipleColorMarkersButton = await MarkerCustomizations.addMultipleColorMarkersButton;
-    const commandOutput = await $(
-      (
-        await MarkerCustomizations.commandOutputTextarea
-      ).selector,
-    ).$('textarea');
+    const commandOutput = await $((await MarkerCustomizations.commandOutputTextarea).selector).$('textarea');
 
     await addMultipleColorMarkersButton.tap();
     await pause(500);

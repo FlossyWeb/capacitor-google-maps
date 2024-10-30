@@ -26,8 +26,8 @@
     "node": ">=20",
     "pnpm": ">=8"
   },
-  "dependencies": {},
   "workspaces": [
     "plugin"
-  ]
+  ],
+  "packageManager": "pnpm@9.12.3+sha1.4fb96925d434c491285182acf29803bb9aa2e6e5"
 }
