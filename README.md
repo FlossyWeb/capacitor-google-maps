@@ -2,12 +2,6 @@
 
 Google maps on Capacitor
 
-## Publish
-To publish on npm you have to navigate inside plugin directory then you run :
-```bash
-npm publish
-```
-
 ## Install
 
 ```bash
@@ -27,20 +21,6 @@ The Google Maps SDK supports the use of showing the users current location via `
 
 Read about [Configuring `Info.plist`](https://capacitorjs.com/docs/ios/configuration#configuring-infoplist) in the [iOS Guide](https://capacitorjs.com/docs/ios) for more information on setting iOS permissions in Xcode.
 
-### Minimum Deployment Target
-
-Version 6 of this plugin has a minimum deployment target of iOS 14.0. You will need to edit `ios/App/Podfile` and change the following line from 13.0 to 14.0:
-```
-platform :ios, '14.0'
-```
-
-Additionally, you will need to open your project in XCode and in the `Build Settings` tab for your `Project` and for each `Target` set the `iOS Deployment Target` to `iOS 14.0` or higher.
-
-### Typescript Configuration
-
-Your project will also need have `skipLibCheck` set to `true` in `tsconfig.json`.
-
-### Migrating from older versions
 > The main Google Maps SDK now supports running on simulators on Apple Silicon Macs, but make sure you have the latest version of [Google-Maps-iOS-Utils](https://github.com/googlemaps/google-maps-ios-utils) installed.
 
 If you added the previous workaround for getting the unreleased version, you can delete it now by removing this line from `ios/App/Podfile`:
@@ -306,11 +286,21 @@ export default MyMap;
 * [`disableTouch()`](#disabletouch)
 * [`enableClustering(...)`](#enableclustering)
 * [`disableClustering()`](#disableclustering)
-* [`addTileOverlay(...)`](#addtileoverlay)
+* [`addTileLayer(...)`](#addtilelayer)
+* [`removeTileLayer(...)`](#removetilelayer)
+* [`setTileLayerOpacity(...)`](#settilelayeropacity)
 * [`addMarker(...)`](#addmarker)
 * [`addMarkers(...)`](#addmarkers)
 * [`removeMarker(...)`](#removemarker)
 * [`removeMarkers(...)`](#removemarkers)
+* [`updateMapOptions(...)`](#updatemapoptions)
+* [`addGroundOverlay(...)`](#addgroundoverlay)
+* [`addOrUpdateGroundOverlay(...)`](#addorupdategroundoverlay)
+* [`addMultipleGroundOverlays(...)`](#addmultiplegroundoverlays)
+* [`setOverlayOpacity(...)`](#setoverlayopacity)
+* [`removeGroundOverlay(...)`](#removegroundoverlay)
+* [`removeAllGroundOverlays(...)`](#removeallgroundoverlays)
+* [`setCurrentOverlayImage(...)`](#setcurrentoverlayimage)
 * [`addPolygons(...)`](#addpolygons)
 * [`removePolygons(...)`](#removepolygons)
 * [`addCircles(...)`](#addcircles)
@@ -409,15 +399,43 @@ disableClustering() => Promise<void>
 --------------------
 
 
-### addTileOverlay(...)
+### addTileLayer(...)
 
 ```typescript
-addTileOverlay(tiles: TileOverlay) => Promise<void>
+addTileLayer(layer: TileOverlay) => Promise<string>
 ```
 
 | Param       | Type                                                |
 | ----------- | --------------------------------------------------- |
-| **`tiles`** | <code><a href="#tileoverlay">TileOverlay</a></code> |
+| **`layer`** | <code><a href="#tileoverlay">TileOverlay</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+--------------------
+
+
+### removeTileLayer(...)
+
+```typescript
+removeTileLayer(args: RemoveTileLayer) => Promise<void>
+```
+
+| Param      | Type                                                        |
+| ---------- | ----------------------------------------------------------- |
+| **`args`** | <code><a href="#removetilelayer">RemoveTileLayer</a></code> |
+
+--------------------
+
+
+### setTileLayerOpacity(...)
+
+```typescript
+setTileLayerOpacity(args: SetTileLayerOpacity) => Promise<void>
+```
+
+| Param      | Type                                                                |
+| ---------- | ------------------------------------------------------------------- |
+| **`args`** | <code><a href="#settilelayeropacity">SetTileLayerOpacity</a></code> |
 
 --------------------
 
@@ -474,6 +492,119 @@ removeMarkers(ids: string[]) => Promise<void>
 | Param     | Type                  |
 | --------- | --------------------- |
 | **`ids`** | <code>string[]</code> |
+
+--------------------
+
+
+### updateMapOptions(...)
+
+```typescript
+updateMapOptions(options: MapOptions) => Promise<void>
+```
+
+| Param         | Type                                              |
+| ------------- | ------------------------------------------------- |
+| **`options`** | <code><a href="#mapoptions">MapOptions</a></code> |
+
+--------------------
+
+
+### addGroundOverlay(...)
+
+```typescript
+addGroundOverlay(overlay: GroundOverlay) => Promise<string>
+```
+
+| Param         | Type                                                    |
+| ------------- | ------------------------------------------------------- |
+| **`overlay`** | <code><a href="#groundoverlay">GroundOverlay</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+--------------------
+
+
+### addOrUpdateGroundOverlay(...)
+
+```typescript
+addOrUpdateGroundOverlay(overlay: GroundOverlay) => Promise<string>
+```
+
+| Param         | Type                                                    |
+| ------------- | ------------------------------------------------------- |
+| **`overlay`** | <code><a href="#groundoverlay">GroundOverlay</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+--------------------
+
+
+### addMultipleGroundOverlays(...)
+
+```typescript
+addMultipleGroundOverlays(overlay: MultipleGroundOverlays) => Promise<string>
+```
+
+| Param         | Type                                                                      |
+| ------------- | ------------------------------------------------------------------------- |
+| **`overlay`** | <code><a href="#multiplegroundoverlays">MultipleGroundOverlays</a></code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
+
+--------------------
+
+
+### setOverlayOpacity(...)
+
+```typescript
+setOverlayOpacity(opacity: number) => Promise<void>
+```
+
+| Param         | Type                |
+| ------------- | ------------------- |
+| **`opacity`** | <code>number</code> |
+
+--------------------
+
+
+### removeGroundOverlay(...)
+
+```typescript
+removeGroundOverlay(id: string) => Promise<void>
+```
+
+| Param    | Type                |
+| -------- | ------------------- |
+| **`id`** | <code>string</code> |
+
+--------------------
+
+
+### removeAllGroundOverlays(...)
+
+```typescript
+removeAllGroundOverlays(id: string) => Promise<void>
+```
+
+| Param    | Type                |
+| -------- | ------------------- |
+| **`id`** | <code>string</code> |
+
+--------------------
+
+
+### setCurrentOverlayImage(...)
+
+```typescript
+setCurrentOverlayImage(imageUrl: string, opacity: number) => Promise<string>
+```
+
+| Param          | Type                |
+| -------------- | ------------------- |
+| **`imageUrl`** | <code>string</code> |
+| **`opacity`**  | <code>number</code> |
+
+**Returns:** <code>Promise&lt;string&gt;</code>
 
 --------------------
 
@@ -933,7 +1064,7 @@ An interface containing the options used when creating a map.
 #### GoogleMapConfig
 
 For web, all the javascript Google Maps options are available as
-GoogleMapConfig extends google.maps.MapOptions.
+GoogleMapConfig extends google.maps.<a href="#mapoptions">MapOptions</a>.
 For iOS and Android only the config options declared on <a href="#googlemapconfig">GoogleMapConfig</a> are available.
 
 | Prop                   | Type                                      | Description                                                                                                                                               | Default            | Since |
@@ -971,16 +1102,27 @@ An interface representing a pair of latitude and longitude coordinates.
 
 #### TileOverlay
 
-For web, all the javascript <a href="#tileoverlay">TileOverlay</a> options are available as
-For iOS and Android only the config options declared on <a href="#tileoverlay">TileOverlay</a> are available.
+an interface for tiles
 
-| Prop          | Type                                                           |
-| ------------- | -------------------------------------------------------------- |
-| **`getTile`** | <code>(x: number, y: number, zoom: number) =&gt; string</code> |
-| **`opacity`** | <code>number</code>                                            |
-| **`visible`** | <code>boolean</code>                                           |
-| **`zIndex`**  | <code>number</code>                                            |
-| **`debug`**   | <code>boolean</code>                                           |
+| Prop          | Type                |
+| ------------- | ------------------- |
+| **`tileUrl`** | <code>string</code> |
+| **`opacity`** | <code>number</code> |
+| **`maxZoom`** | <code>number</code> |
+
+
+#### RemoveTileLayer
+
+| Prop     | Type                |
+| -------- | ------------------- |
+| **`id`** | <code>string</code> |
+
+
+#### SetTileLayerOpacity
+
+| Prop          | Type                |
+| ------------- | ------------------- |
+| **`opacity`** | <code>number</code> |
 
 
 #### Marker
@@ -1020,6 +1162,37 @@ https://tools.ietf.org/html/rfc7946#section-3.1.2
 | ----------------- | --------------------------------------------- | ------------------------------------- |
 | **`type`**        | <code>'<a href="#point">Point</a>'</code>     | Specifies the type of GeoJSON object. |
 | **`coordinates`** | <code><a href="#position">Position</a></code> |                                       |
+
+
+#### MapOptions
+
+An interface representing the map options attributes.
+
+| Prop         | Type                                      |
+| ------------ | ----------------------------------------- |
+| **`zoom`**   | <code>number</code>                       |
+| **`center`** | <code><a href="#latlng">LatLng</a></code> |
+| **`styles`** | <code>MapTypeStyle[]</code>               |
+
+
+#### GroundOverlay
+
+An interface representing the ground overlay attributes.
+
+| Prop           | Type                                                                                               |
+| -------------- | -------------------------------------------------------------------------------------------------- |
+| **`imageUrl`** | <code>string</code>                                                                                |
+| **`bounds`**   | <code>{ southwest: <a href="#latlng">LatLng</a>; northeast: <a href="#latlng">LatLng</a>; }</code> |
+| **`opacity`**  | <code>number</code>                                                                                |
+
+
+#### MultipleGroundOverlays
+
+| Prop           | Type                                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------------------------- |
+| **`imageUrl`** | <code>string[]</code>                                                                                |
+| **`bounds`**   | <code>{ southwest: <a href="#latlng">LatLng</a>; northeast: <a href="#latlng">LatLng</a>; }[]</code> |
+| **`opacity`**  | <code>number</code>                                                                                  |
 
 
 #### Polygon
