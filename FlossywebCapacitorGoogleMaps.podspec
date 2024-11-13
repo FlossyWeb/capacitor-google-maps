@@ -15,6 +15,7 @@ Pod::Spec.new do |s|
   s.dependency 'Capacitor'
   s.dependency 'GoogleMaps', '~> 8.4'
   s.dependency 'Google-Maps-iOS-Utils', '~> 5.0'
+  s.dependency 'SDWebImage', '~> 5.0'
   s.swift_version = '5.1'
   s.static_framework = true
 end

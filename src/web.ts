@@ -61,7 +61,7 @@ export class CapacitorGoogleMapsWeb
         [id: string]: google.maps.GroundOverlay;
       };
       tiles: {
-        [id: string]: any;
+        [id: string]: google.maps.ImageMapType;
       };
       polygons: {
         [id: string]: google.maps.Polygon;
@@ -303,13 +303,13 @@ export class CapacitorGoogleMapsWeb
     return { ids: markerIds };
   }
 
-  async addTileLayer(args: AddTileOverlayArgs): Promise<{ id: string }>  {
+  async addTileLayer(_args: AddTileOverlayArgs): Promise<{ id: string }>  {
     const tileLayer = new google.maps.ImageMapType({
       getTileUrl: (coord, zoom) => {
-        const url = args.tileLayer.tileUrl
+        const url = _args.tileLayer.tileUrl
           .replace('{x}', coord.x.toString())
           .replace('{y}', coord.y.toString())
-          .replace('{z}', zoom.toString());
+          .replace('{zoom}', zoom.toString());
         return url;
       },
       tileSize: new google.maps.Size(256, 256),
@@ -317,41 +317,65 @@ export class CapacitorGoogleMapsWeb
     if (this.currentTileLayer) {
       this.currentTileLayer = tileLayer;
     }
-    
-    if (this.maps[args.id].tileLayer) {
-      this.maps[args.id].map.overlayMapTypes.removeAt(0);
+    // if (this.maps[_args.id].tileLayer) { // Remove previous overlay
+    //   this.maps[_args.id].map.overlayMapTypes.removeAt(0);
+    // }
+    if(_args.tileLayer.opacity) tileLayer.setOpacity(_args.tileLayer.opacity);
+    // Draw Tiles
+    this.maps[_args.id].map.overlayMapTypes.push(tileLayer);
+    // this.maps[_args.id].tileLayer = tileLayer;
+    /*
+    if (_args.tileLayer?.debug) { // Optionally, you can set debug mode if needed
+      this.maps[_args.id].map.addListener('mousemove', function (event: any) {
+        console.log('Mouse Coordinates: ', event.latLng.toString());
+      });
     }
-  
-    this.maps[args.id].map.overlayMapTypes.push(tileLayer);
-    this.maps[args.id].tileLayer = tileLayer;
-
-  
+    if (!_args.tileLayer?.visible) { // Set visibility based on the 'visible' property
+      this.maps[_args.id].map.overlayMapTypes.pop(); // Remove the last overlay (customMapOverlay) from the stack
+    }
+    if (_args.tileLayer?.zIndex !== undefined) { // Set zIndex based on the 'zIndex' property
+      // Move the customMapOverlay to the specified index in the overlay stack
+      this.maps[_args.id].map.overlayMapTypes.setAt(
+        this.maps[_args.id].map.overlayMapTypes.getLength() - 1,
+        tileLayer,
+      );
+    }
+    */
     const id = '' + this.currTileId;
-  
-    // this.maps[args.id].tiles[id] = tileLayer;
+    this.maps[_args.id].tiles[id] = tileLayer;
     this.currTileId++;
-  
     return { id: id };
   }
-  
-  async removeTileLayer(args: RemoveTileLayerArgs): Promise<void> {
-    if (this.maps[args.id].tileLayer) {
-      this.maps[args.id].map.overlayMapTypes.removeAt(0);
-      delete this.maps[args.id].tileLayer;
+
+  async removeTileLayer(_args: RemoveTileLayerArgs): Promise<void> {
+    if (this.maps[_args.id].tiles[_args.tileId]) {
+      this.maps[_args.id].tiles[_args.tileId].setOpacity(0);
+      delete this.maps[_args.id].tiles[_args.tileId];
     }
+    // if (this.maps[_args.id].tileLayer) {
+    //   this.maps[_args.id].map.overlayMapTypes.removeAt(0);
+    //   delete this.maps[_args.id].tileLayer;
+    // }
   }
 
-  async setTileLayerOpacity(args: SetTileLayerOpacityArgs): Promise<void> {
-    const map = this.maps[args.id];
+  async removeAllTileLayers(_args: RemoveTileLayerArgs): Promise<void> {
+    Object.keys(this.maps[_args.id].tiles).forEach(tileId => {
+      this.maps[_args.id].tiles[tileId]?.setOpacity(0);
+      delete this.maps[_args.id].tiles[tileId];
+    });
+    this.currentTileLayer = null; // Reset the currentTileLayer
+  }
+
+  async setTileLayerOpacity(_args: SetTileLayerOpacityArgs): Promise<void> {
+    const map = this.maps[_args.id];
     if (map && map.tileLayer) {
-        const clampedOpacity = Math.max(0, Math.min(1, args.opacity)); // Clamp opacity between 0 and 1
-        map.tileLayer.setOpacity(clampedOpacity); // Assuming your tileLayer object has a setOpacity method
+      const clampedOpacity = Math.max(0, Math.min(1, _args.opacity)); // Clamp opacity between 0 and 1
+      map.tileLayer.setOpacity(clampedOpacity); // Assuming your tileLayer object has a setOpacity method
     } else {
-        console.error('No tile layer found for the given map ID');
+      console.error('No tile layer found for the given map ID');
     }
   }
 
-  
   async addMarker(_args: AddMarkerArgs): Promise<{ id: string }> {
     const markerOpts = this.buildMarkerOpts(
       _args.marker,
@@ -383,18 +407,18 @@ export class CapacitorGoogleMapsWeb
     this.maps[_args.id].markers[_args.markerId].setMap(null);
     delete this.maps[_args.id].markers[_args.markerId];
   }
-  
+
   async updateMapOptions(_args: UpdateMapOptionArgs): Promise<void> {
     const map = this.maps[_args.id];
     if (!map) {
       throw new Error('Map not found');
     }
-  
+
     const googleMapOptions: google.maps.MapOptions = {};
     if (_args.options.zoom !== undefined) {
       googleMapOptions.zoom = _args.options.zoom;
     }
-  
+
     if (_args.options.center) {
       googleMapOptions.center = _args.options.center;
     }
@@ -405,25 +429,24 @@ export class CapacitorGoogleMapsWeb
 
     map.map.setOptions(googleMapOptions);
   }
-  
+
   // async updateMapOptions(options: UpdateMapOptions): Promise<void> {
   //   const map = this.maps[options.id];
   //   if (!map) {
   //     throw new Error('Map not found');
   //   }
-  
+
   //   const cameraUpdate: CameraUpdate = {};
   //   if (options.zoom !== undefined) {
   //     cameraUpdate.zoom = options.zoom;
   //   }
-  
+
   //   if (options.center) {
   //     cameraUpdate.target = options.center;
   //   }
-  
+
   //   await map.moveCamera(cameraUpdate);
   // }
-  
 
   async addGroundOverlay(_args: AddGroundOverlayArgs): Promise<{ id: string }> {
     // Remove all existing ground overlays
@@ -431,7 +454,7 @@ export class CapacitorGoogleMapsWeb
     //   this.maps[_args.id].overlays[overlayId].setMap(null);
     //   delete this.maps[_args.id].overlays[overlayId];
     // });
-    
+
     const bounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(
         _args.overlay.bounds.southwest.lat,
@@ -442,31 +465,31 @@ export class CapacitorGoogleMapsWeb
         _args.overlay.bounds.northeast.lng
       )
     );
-  
+
     const overlayOpts = this.buildGroundOverlay(
       _args.overlay,
       this.maps[_args.id].map
     );
-  
+
     const overlay = new google.maps.GroundOverlay(
       _args.overlay.imageUrl,
       bounds,
       overlayOpts
     );
-  
+
     overlay.setMap(this.maps[_args.id].map);
     // this.currentOverlay = overlay;
-  
+
     const id = '' + this.currGroundOverlayId;
-  
+
     this.maps[_args.id].overlays[id] = overlay;
     // You can add event listeners here if needed, similar to setMarkerListeners for markers.
-  
+
     this.currGroundOverlayId++;
-  
+
     return { id: id };
   }
-  
+
   async addOrUpdateGroundOverlay(_args: AddGroundOverlayArgs): Promise<{ id: string }> {
     const bounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(
@@ -478,36 +501,36 @@ export class CapacitorGoogleMapsWeb
         _args.overlay.bounds.northeast.lng
       )
     );
-  
+
     const overlayOpts = this.buildGroundOverlay(
       _args.overlay,
       this.maps[_args.id].map
     );
-  
+
     if (this.currentOverlay) {
       this.currentOverlay.setMap(null);
     }
-  
+
     const overlay = new google.maps.GroundOverlay(
       _args.overlay.imageUrl,
       bounds,
       overlayOpts
     );
-  
+
     overlay.setMap(this.maps[_args.id].map);
     this.currentOverlay = overlay;
-  
+
     const id = '' + this.currGroundOverlayId;
-  
+
     this.maps[_args.id].overlays[id] = overlay;
     this.currGroundOverlayId++;
-  
+
     return { id: id };
   }
 
   async addMultipleGroundOverlays(_args: AddMultipleGroundOverlayArgs): Promise<{ id: string }> {
     let firstId: string = '';
-  
+
     // Loop through the arrays of image URLs and bounds to add each overlay
     for (let i = 0; i < _args.overlays.imageUrl.length; i++) {
       // Create a single GroundOverlay object by restructuring the data
@@ -519,7 +542,7 @@ export class CapacitorGoogleMapsWeb
         },
         opacity: _args.overlays.opacity,
       };
-  
+
       // Now we can call buildGroundOverlay with a properly structured GroundOverlay object
       const bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(
@@ -531,29 +554,29 @@ export class CapacitorGoogleMapsWeb
           singleOverlay.bounds.northeast.lng
         )
       );
-  
+
       const overlayOpts = this.buildGroundOverlay(singleOverlay, this.maps[_args.id].map);
-  
+
       const overlay = new google.maps.GroundOverlay(
         singleOverlay.imageUrl,
         bounds,
         overlayOpts
       );
-  
+
       overlay.setMap(this.maps[_args.id].map);
-  
+
       const id = '' + this.currGroundOverlayId;
       if (i === 0) {
         firstId = id; // Store the first ID
       }
-  
+
       this.maps[_args.id].overlays[id] = overlay;
       this.currGroundOverlayId++;
     }
-  
+
     return { id: firstId }; // Return only the first ID
   }
-  
+
   async setOverlayOpacity(_args: SetOverlayOpacityArgs): Promise<void> {
     if (this.currentOverlay) {
       this.currentOverlay.setOpacity(_args.opacity);
@@ -561,13 +584,12 @@ export class CapacitorGoogleMapsWeb
       console.warn('No existing overlay to update opacity');
     }
   }
-  
 
   async removeGroundOverlay(_args: RemoveGroundOverlayArgs): Promise<void> {
     this.maps[_args.id].overlays[_args.overlayId].setMap(null);
     delete this.maps[_args.id].overlays[_args.overlayId];
   }
-  
+
   async removeAllGroundOverlays(_args: RemoveAllGroundOverlaysArgs): Promise<void> {
     Object.keys(this.maps[_args.id].overlays).forEach(overlayId => {
       this.maps[_args.id].overlays[overlayId].setMap(null);
@@ -581,25 +603,23 @@ export class CapacitorGoogleMapsWeb
     if (!this.currentOverlay) {
       throw new Error('No overlay has been added to update its image.');
     }
-  
+
     // Remove the current overlay
     this.currentOverlay.setMap(null);
-  
+
     // Create a new overlay with the updated image URL
     const newOverlay = new google.maps.GroundOverlay(
       _args.imageUrl,
       this.currentOverlay.getBounds(),
       { opacity: _args.opacity }
     );
-  
+
     // Add the new overlay to the map
     newOverlay.setMap(this.maps[_args.id].map);
-  
+
     // Update the currentOverlay reference
     this.currentOverlay = newOverlay;
   }
-  
-  
 
   private buildGroundOverlay(
     overlay: GroundOverlay,
@@ -755,8 +775,6 @@ export class CapacitorGoogleMapsWeb
     this.setMapListeners(_args.id);
   }
 
-
-  
   async destroy(_args: DestroyMapArgs): Promise<void> {
     console.log(`Destroy map: ${_args.id}`);
     const mapItem = this.maps[_args.id];

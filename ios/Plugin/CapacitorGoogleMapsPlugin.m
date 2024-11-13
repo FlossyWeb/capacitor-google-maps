@@ -18,6 +18,7 @@ CAP_PLUGIN(CapacitorGoogleMapsPlugin, "CapacitorGoogleMaps",
   //  CAP_PLUGIN_METHOD(removeGroundOverlay, CAPPluginReturnPromise);
    CAP_PLUGIN_METHOD(addTileLayer, CAPPluginReturnPromise);
    CAP_PLUGIN_METHOD(removeTileLayer, CAPPluginReturnPromise);
+   CAP_PLUGIN_METHOD(removeAllTileLayers, CAPPluginReturnPromise);
    CAP_PLUGIN_METHOD(setTileLayerOpacity, CAPPluginReturnPromise);
    CAP_PLUGIN_METHOD(addMarkers, CAPPluginReturnPromise);
    CAP_PLUGIN_METHOD(addPolygons, CAPPluginReturnPromise);

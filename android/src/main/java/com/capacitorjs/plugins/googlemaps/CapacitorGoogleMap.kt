@@ -61,14 +61,14 @@ class CapacitorGoogleMap(
     // val imageCache = LruCache<String, Bitmap>(50)  // Cache for up to 50 images
     val imageCache = LruCache<String, BitmapDescriptor>(50)
 
-    private val polylines = HashMap<String, CapacitorGoogleMapPolyline>()        
+    private val polylines = HashMap<String, CapacitorGoogleMapPolyline>()
     private val markerIcons = HashMap<String, Bitmap>()
     private var clusterManager: ClusterManager<CapacitorGoogleMapMarker>? = null
 
 
     // Remove the overlays map for tile overlays. Only track the current tile overlay.
     private var currentTileOverlay: CapacitorGoogleMapTileOverlay? = null
-
+    var tileOvelays: MutableMap<String, CapacitorGoogleMapTileOverlay> = mutableMapOf()
 
     private val isReadyChannel = Channel<Boolean>()
     private var debounceJob: Job? = null
@@ -306,6 +306,33 @@ class CapacitorGoogleMap(
             }
         } catch (e: GoogleMapsError) {
             callback(Result.failure(e))
+        }
+    }
+
+
+    fun removeAllTileLayers(callback: (result: Result<String>) -> Unit) {
+        try {
+            googleMap ?: throw GoogleMapNotAvailable()
+
+            CoroutineScope(Dispatchers.Main).launch {
+                tileOvelays.values.forEach { tile ->
+                    if (tile.googleMapTileOverlay != null) {
+                        // Remove the ground overlay from the map
+                        overlay.googleMapTileOverlay?.remove()
+                    } else {
+                        Log.w("CapacitorGoogleMaps", "Tile is missing or was not created properly, skipping removal.")
+                    }
+                }
+                tileOvelays.clear()
+                currentTileOverlay = null // Reset the currentTileOverlay
+
+                callback(null)
+            }
+        } catch (e: GoogleMapsError) {
+            callback(e)
+        } catch (e: Exception) {
+            Log.e("CapacitorGoogleMaps", "Unexpected error while removing overlays: ${e.message}")
+            callback(InvalidArgumentsError("Unexpected error occurred: ${e.message}"))
         }
     }
 
@@ -671,9 +698,6 @@ class CapacitorGoogleMap(
     }
 
 
-
-
-
     fun removeGroundOverlay(id: String, callback: (error: GoogleMapsError?) -> Unit) {
         try {
             googleMap ?: throw GoogleMapNotAvailable()
@@ -691,6 +715,7 @@ class CapacitorGoogleMap(
             callback(e)
         }
     }
+
 
     fun removeAllGroundOverlays(callback: (error: GoogleMapsError?) -> Unit) {
         try {

@@ -89,6 +89,7 @@ export interface AddTileOverlayArgs {
 }
 export interface RemoveTileLayerArgs {
   id: string;
+  tileId: string;
 }
 export interface SetTileLayerOpacityArgs {
   id: string;
@@ -230,9 +231,10 @@ export interface CapacitorGoogleMapsPlugin extends Plugin {
 
   updateMapOptions(options: UpdateMapOptionArgs): Promise<void>;
   addGroundOverlay(args: AddGroundOverlayArgs): Promise<{ id: string }>;
-  
+
   addTileLayer(args: AddTileOverlayArgs): Promise<{ id: string }>;
   removeTileLayer(args: RemoveTileLayerArgs): Promise<void>;
+  removeAllTileLayers(args: RemoveTileLayerArgs): Promise<void>;
   setTileLayerOpacity(args: SetTileLayerOpacityArgs): Promise<void>;
 
   addOrUpdateGroundOverlay(args: AddGroundOverlayArgs): Promise<{ id: string }>;

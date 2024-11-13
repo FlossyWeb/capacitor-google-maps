@@ -288,6 +288,7 @@ export default MyMap;
 * [`disableClustering()`](#disableclustering)
 * [`addTileLayer(...)`](#addtilelayer)
 * [`removeTileLayer(...)`](#removetilelayer)
+* [`removeAllTileLayers(...)`](#removealltilelayers)
 * [`setTileLayerOpacity(...)`](#settilelayeropacity)
 * [`addMarker(...)`](#addmarker)
 * [`addMarkers(...)`](#addmarkers)
@@ -418,6 +419,19 @@ addTileLayer(layer: TileOverlay) => Promise<string>
 
 ```typescript
 removeTileLayer(args: RemoveTileLayer) => Promise<void>
+```
+
+| Param      | Type                                                        |
+| ---------- | ----------------------------------------------------------- |
+| **`args`** | <code><a href="#removetilelayer">RemoveTileLayer</a></code> |
+
+--------------------
+
+
+### removeAllTileLayers(...)
+
+```typescript
+removeAllTileLayers(args: RemoveTileLayer) => Promise<void>
 ```
 
 | Param      | Type                                                        |
@@ -1104,11 +1118,14 @@ An interface representing a pair of latitude and longitude coordinates.
 
 an interface for tiles
 
-| Prop          | Type                |
-| ------------- | ------------------- |
-| **`tileUrl`** | <code>string</code> |
-| **`opacity`** | <code>number</code> |
-| **`maxZoom`** | <code>number</code> |
+| Prop          | Type                 |
+| ------------- | -------------------- |
+| **`tileUrl`** | <code>string</code>  |
+| **`opacity`** | <code>number</code>  |
+| **`maxZoom`** | <code>number</code>  |
+| **`debug`**   | <code>boolean</code> |
+| **`visible`** | <code>boolean</code> |
+| **`zIndex`**  | <code>number</code>  |
 
 
 #### RemoveTileLayer

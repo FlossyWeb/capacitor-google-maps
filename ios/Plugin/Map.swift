@@ -81,19 +81,18 @@ public class Map {
     var polygons = [Int: GMSPolygon]()
     var circles = [Int: GMSCircle]()
     var polylines = [Int: GMSPolyline]()
-    var tileLayers: [Int: GMSTileLayer] = [:]
 
     var markers = [Int: GMSMarker]()
     var markerIcons = [String: UIImage]()
-  
+
     // var groundOverlays = [Int: GMSGroundOverlay]()
     // var overlayImages = [String: UIImage]()  // Cache for ground overlay images
-    
+
     var currentOverlay: GMSGroundOverlay?
     var multipleCurrentOverlays = [String: GMSGroundOverlay]()  // Dictionary to store multiple overlays
-    
 
     var currentTileLayer: GMSTileLayer?  // Reference to the current tile layer
+    var tileLayers = [Int: GMSTileLayer]()  // Dictionary to store multiple tiles
 
     // var nextOverlayId = 1
     // var mapView: GMSMapView
@@ -251,9 +250,7 @@ public class Map {
         var tileLayerHash: Int = 0
         print("begin adding a tile layer in map")
         DispatchQueue.main.sync {
-            // let layer: GMSTileLayer
-
-            self.currentTileLayer?.map = nil
+            // self.currentTileLayer?.map = nil // Remove previous overlay
 
             // Create and add the ACTUAL TILE OBJECT
             let newTileLayer = self.buildTile(tileLayer: tileLayer)
@@ -268,7 +265,6 @@ public class Map {
         return tileLayerHash
     }
 
-
     func buildTile(tileLayer: TileLayer) -> GMSTileLayer {
         // Implement GMSTileURLConstructor
         let urls: GMSTileURLConstructor = { (x, y, zoom) in
@@ -281,12 +277,12 @@ public class Map {
 
             // Construct the URL for the tile
             var url = tileLayer.tileUrl ?? ""
-            
+
             // Replace placeholders with actual values
             url = url.replacingOccurrences(of: "{zoom}", with: "\(zoom)")
             url = url.replacingOccurrences(of: "{x}", with: "\(x)")
             url = url.replacingOccurrences(of: "{y}", with: "\(y)")
-            
+
             print("Constructed URL: \(url)")
             return URL(string: url)
         }
@@ -298,38 +294,47 @@ public class Map {
 
         return newLayer
     }
+    /*
+    func buildTile(tileLayer: TileLayer) -> GMSTileLayer {
+        // Implement GMSTileURLConstructor
+        // Returns a Tile based on the x,y,zoom coordinates, and the requested floor
+        let urls: GMSTileURLConstructor = { (x, y, zoom) in
+            var url = tileLayer.tileUrl ?? ""
 
+            // Replace placeholders with actual values
+            url = url.replacingOccurrences(of: "{zoom}", with: "\(zoom)")
+            url = url.replacingOccurrences(of: "{x}", with: "\(x)")
+            url = url.replacingOccurrences(of: "{y}", with: "\(y)")
 
-    // func buildTile(tileLayer: TileLayer) -> GMSTileLayer {
-    //     // Implement GMSTileURLConstructor
-    //     // Returns a Tile based on the x,y,zoom coordinates, and the requested floor
-    //     let urls: GMSTileURLConstructor = { (x, y, zoom) in
-    //       var url = tileLayer.tileUrl ?? ""
-        
-        
+            print("Constructed URL: \(url)")
+            return URL(string: url)
+        }
 
-    //       // Replace placeholders with actual values
-    //       url = url.replacingOccurrences(of: "{zoom}", with: "\(zoom)")
-    //       url = url.replacingOccurrences(of: "{x}", with: "\(x)")
-    //       url = url.replacingOccurrences(of: "{y}", with: "\(y)")
-          
-    //       print("Constructed URL: \(url)")
-    //       return URL(string: url)
-    //     }
+        // Create the GMSTileLayer
+        let newLayer = GMSURLTileLayer(urlConstructor: urls)
 
-    //     // Create the GMSTileLayer
-    //     let newLayer = GMSURLTileLayer(urlConstructor: urls)
+        newLayer.opacity = tileLayer.opacity ?? 1
+        newLayer.zIndex = tileLayer.zIndex ?? 1
 
-    //     newLayer.opacity = tileLayer.opacity ?? 1
-    //     newLayer.zIndex = tileLayer.zIndex ?? 1
-
-    //     return newLayer
-    // }
-
+        return newLayer
+    }
+    */
     func removeTileLayer() {
         DispatchQueue.main.async {
             self.currentTileLayer?.map = nil
             self.currentTileLayer = nil
+        }
+    }
+
+    func removeAllTileLayers() {
+        DispatchQueue.main.sync {
+            self.currentTileLayer?.map = nil
+            self.currentTileLayer = nil
+            // for removing multiple..
+            for (layerId, layer) in self.tileLayers {
+                layer.map = nil  // Remove the overlay from the map
+            }
+            self.tileLayers.removeAll()  // Clear the dictionary
         }
     }
 
@@ -347,7 +352,6 @@ public class Map {
             print("No current tile layer to update opacity.")
         }
     }
-
 
     func addMarker(marker: Marker) throws -> Int {
         var markerHash = 0
@@ -481,8 +485,8 @@ public class Map {
             }
 
             if let center = options["center"] as? [String: Double],
-              let lat = center["lat"],
-              let lng = center["lng"] {
+                let lat = center["lat"],
+                let lng = center["lng"] {
                 let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: lng)
                 mapViewController.GMapView.animate(toLocation: coordinate)
             }
@@ -505,18 +509,14 @@ public class Map {
         guard let urlData = url.data(using: .utf8) else {
             return ""
         }
-        
         // Create a buffer for the hash
         var digest = [UInt8](repeating: 0, count: Int(CC_MD5_DIGEST_LENGTH))
-        
         // Compute the MD5 hash
         urlData.withUnsafeBytes {
             _ = CC_MD5($0.baseAddress, CC_LONG(urlData.count), &digest)
         }
-        
         // Convert the digest to a hex string
         let hash = digest.map { String(format: "%02x", $0) }.joined()
-        
         // Return the first 6 characters of the hash (you can adjust the length)
         return String(hash.prefix(6))
     }
@@ -528,7 +528,7 @@ public class Map {
             // Use SDWebImage to load the image asynchronously
             SDWebImageManager.shared.loadImage(with: url, options: .highPriority, progress: nil) { [weak self] (image, data, error, cacheType, finished, url) in
                 guard let self = self else { return }
-                
+
                 if let error = error {
                     print("Error loading image: \(error.localizedDescription)")
                     return
@@ -561,8 +561,8 @@ public class Map {
         var firstOverlayId: String?
 
         guard let imageUrls = overlaysData["imageUrl"] as? [String],
-              let boundsData = overlaysData["bounds"] as? [JSObject],
-              let opacity = overlaysData["opacity"] as? NSNumber else {
+                let boundsData = overlaysData["bounds"] as? [JSObject],
+                let opacity = overlaysData["opacity"] as? NSNumber else {
             throw GoogleMapErrors.invalidArguments("Missing required imageUrl, bounds, or opacity in overlays object")
         }
 
@@ -610,7 +610,6 @@ public class Map {
         return newOverlay
     }
 
-
     // private func buildGroundOverlay(overlay: GroundOverlay) -> GMSGroundOverlay {
     //     let newOverlay = GMSGroundOverlay()
     //     newOverlay.bounds = overlay.bounds
@@ -641,10 +640,9 @@ public class Map {
     //         }
     //     }
 
-        
     //     return newOverlay
     // }
-    
+
     // not working at the moment
     func setCurrentOverlayImage(imageUrl: String, opacity: Float) {
         DispatchQueue.main.sync {
@@ -657,7 +655,6 @@ public class Map {
             currentOverlay = newOverlay
         }
     }
-
 
     func setOverlayOpacity(opacity: Float) {
         // Adjust the opacity of the single current overlay, if it exists
@@ -681,7 +678,6 @@ public class Map {
         }
     }
 
-
     func removeAllGroundOverlays() {
         DispatchQueue.main.sync {
             currentOverlay?.map = nil
@@ -693,8 +689,6 @@ public class Map {
             self.multipleCurrentOverlays.removeAll()  // Clear the dictionary
         }
     }
-
-
 
     func enableClustering(_ minClusterSize: Int?) {
         if !self.mapViewController.clusteringEnabled {

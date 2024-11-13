@@ -299,6 +299,34 @@ class CapacitorGoogleMapsPlugin : Plugin(), OnMapsSdkInitializedCallback {
     }
 
 
+    @PluginMethod
+    fun removeAllTileLayers(call: PluginCall) {
+        try {
+            val id = call.getString("id")
+            id ?: throw InvalidMapIdError()
+
+            val map = maps[id]
+            map ?: throw MapNotFoundError()
+
+            map.removeAllTileLayers { result ->
+                result.onSuccess {
+                    call.resolve()
+                }.onFailure { error ->
+                    // Catch and handle the error properly
+                    if (error is GoogleMapsError) {
+                        handleError(call, error) // Handle GoogleMapsError
+                    } else {
+                        handleError(call, Exception(error.message)) // Handle general exceptions
+                    }
+                }
+            }
+        } catch (e: GoogleMapsError) {
+            handleError(call, e) // Handle GoogleMapsError
+        } catch (e: Exception) {
+            handleError(call, e) // Handle other exceptions
+        }
+    }
+
 
     @PluginMethod
     fun addMarker(call: PluginCall) {

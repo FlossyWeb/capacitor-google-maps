@@ -7,6 +7,9 @@ export interface TileOverlay {
   tileUrl: string;
   opacity?: number;
   maxZoom?: number;
+  debug?: boolean;
+  visible?: boolean;
+  zIndex?: number;
 }
 
 export interface RemoveTileLayer {

@@ -199,11 +199,11 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
             }
 
             let tileLayer = try TileLayer(fromJSObject: tileObj)
-            
+
             let tileId = try map.addTileLayer(tileLayer: tileLayer)
 
             call.resolve(["id": String(tileId)])
-            
+
         } catch {
             print("there was an error adding the tile layer")
             handleError(call, error: error)
@@ -221,6 +221,23 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
             }
 
             map.removeTileLayer()
+            call.resolve()
+        } catch {
+            handleError(call, error: error)
+        }
+    }
+
+    @objc func removeAllTileLayers(_ call: CAPPluginCall) {
+        do {
+            guard let id = call.getString("id") else {
+                throw GoogleMapErrors.invalidMapId
+            }
+
+            guard let map = self.maps[id] else {
+                throw GoogleMapErrors.mapNotFound
+            }
+
+            map.removeAllTileLayers()
             call.resolve()
         } catch {
             handleError(call, error: error)

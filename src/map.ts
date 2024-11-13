@@ -47,6 +47,7 @@ export interface GoogleMapInterface {
 
   addTileLayer(layer: TileOverlay): Promise<string>;
   removeTileLayer(args: RemoveTileLayer): Promise<void>;
+  removeAllTileLayers(args: RemoveTileLayer): Promise<void>;
   setTileLayerOpacity(args: SetTileLayerOpacity): Promise<void>;
 
   addMarker(marker: Marker): Promise<string>;
@@ -435,7 +436,6 @@ export class GoogleMap {
   async addGroundOverlay(overlay: GroundOverlay): Promise<string> {
     // Remove all existing ground overlays
     // await this.removeAllGroundOverlays();
-    
     const res = await CapacitorGoogleMaps.addGroundOverlay({
       id: this.id,
       overlay,
@@ -449,14 +449,20 @@ export class GoogleMap {
       id: this.id,
       tileLayer,
     });
-  
     return res.id;
   }
-  
 
-  async removeTileLayer(): Promise<void> {
+  async removeTileLayer(tileId: string): Promise<void> {
     return CapacitorGoogleMaps.removeTileLayer({
-      id: this.id
+      id: this.id,
+      tileId: tileId
+    });
+  }
+
+  async removeAllTileLayers(tileId: string): Promise<void> {
+    return CapacitorGoogleMaps.removeAllTileLayers({
+      id: this.id,
+      tileId: tileId
     });
   }
 
