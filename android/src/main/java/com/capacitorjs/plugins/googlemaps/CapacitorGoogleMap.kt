@@ -54,21 +54,19 @@ class CapacitorGoogleMap(
     private val markers = HashMap<String, CapacitorGoogleMapMarker>()
     private val polygons = HashMap<String, CapacitorGoogleMapsPolygon>()
     private val circles = HashMap<String, CapacitorGoogleMapsCircle>()
-    var currentOverlay: CapacitorGoogleMapGroundOverlay? = null
 
-    // val overlays = HashMap<String, CapacitorGoogleMapGroundOverlay>()
+    var currentOverlay: CapacitorGoogleMapGroundOverlay? = null
     var overlays: MutableMap<String, CapacitorGoogleMapGroundOverlay> = mutableMapOf()
-    // val imageCache = LruCache<String, Bitmap>(50)  // Cache for up to 50 images
+    // val overlays = HashMap<String, CapacitorGoogleMapGroundOverlay>()
     val imageCache = LruCache<String, BitmapDescriptor>(50)
+    // val imageCache = LruCache<String, Bitmap>(50)  // Cache for up to 50 images
+    // Remove the overlays map for tile overlays. Only track the current tile overlay.
+    private var currentTileOverlay: CapacitorGoogleMapTileOverlay? = null
+    var tileOvelays: MutableMap<String, CapacitorGoogleMapTileOverlay> = mutableMapOf()
 
     private val polylines = HashMap<String, CapacitorGoogleMapPolyline>()
     private val markerIcons = HashMap<String, Bitmap>()
     private var clusterManager: ClusterManager<CapacitorGoogleMapMarker>? = null
-
-
-    // Remove the overlays map for tile overlays. Only track the current tile overlay.
-    private var currentTileOverlay: CapacitorGoogleMapTileOverlay? = null
-    var tileOvelays: MutableMap<String, CapacitorGoogleMapTileOverlay> = mutableMapOf()
 
     private val isReadyChannel = Channel<Boolean>()
     private var debounceJob: Job? = null
@@ -246,6 +244,9 @@ class CapacitorGoogleMap(
                     // Get the tile overlay ID from the newly added tile overlay
                     val tileOverlayId = googleMapTileOverlay.id
 
+                    // Register the current tile overlay to the dictionnary
+                    tileOvelays[tileOverlayId] = tileOverlay
+
                     // Return the tile overlay ID in the callback
                     callback(Result.success(tileOverlayId))
                 } else {
@@ -318,7 +319,7 @@ class CapacitorGoogleMap(
                 tileOvelays.values.forEach { tile ->
                     if (tile.googleMapTileOverlay != null) {
                         // Remove the ground overlay from the map
-                        overlay.googleMapTileOverlay?.remove()
+                        tile.googleMapTileOverlay?.remove()
                     } else {
                         Log.w("CapacitorGoogleMaps", "Tile is missing or was not created properly, skipping removal.")
                     }
@@ -326,13 +327,10 @@ class CapacitorGoogleMap(
                 tileOvelays.clear()
                 currentTileOverlay = null // Reset the currentTileOverlay
 
-                callback(null)
+                callback(Result.success("Done"))
             }
         } catch (e: GoogleMapsError) {
-            callback(e)
-        } catch (e: Exception) {
-            Log.e("CapacitorGoogleMaps", "Unexpected error while removing overlays: ${e.message}")
-            callback(InvalidArgumentsError("Unexpected error occurred: ${e.message}"))
+            callback(Result.failure(e))
         }
     }
 

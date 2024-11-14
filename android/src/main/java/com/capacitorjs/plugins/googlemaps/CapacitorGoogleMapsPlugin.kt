@@ -268,8 +268,6 @@ class CapacitorGoogleMapsPlugin : Plugin(), OnMapsSdkInitializedCallback {
         }
     }
 
-
-
     @PluginMethod
     fun removeTileLayer(call: PluginCall) {
         try {
