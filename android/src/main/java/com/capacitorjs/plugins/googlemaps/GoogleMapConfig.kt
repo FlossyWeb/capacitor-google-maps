@@ -14,6 +14,7 @@ class GoogleMapConfig(fromJSONObject: JSONObject) {
     var googleMapOptions: GoogleMapOptions? = null
     var zoom: Int = 0
     var liteMode: Boolean = false
+    var disableDefaultUI: Boolean = false
     var devicePixelRatio: Float = 1.00f
     var styles: String? = null
     var mapId: String? = null
@@ -71,6 +72,10 @@ class GoogleMapConfig(fromJSONObject: JSONObject) {
                 fromJSONObject.has("androidLiteMode") &&
                         fromJSONObject.getBoolean("androidLiteMode")
 
+        disableDefaultUI =
+                fromJSONObject.has("disableDefaultUI") &&
+                        fromJSONObject.getBoolean("disableDefaultUI")
+
         width = fromJSONObject.getInt("width")
         height = fromJSONObject.getInt("height")
         x = fromJSONObject.getInt("x")
@@ -87,7 +92,8 @@ class GoogleMapConfig(fromJSONObject: JSONObject) {
 
         mapId = fromJSONObject.getString("androidMapId")
 
-        googleMapOptions = GoogleMapOptions().camera(cameraPosition).liteMode(liteMode)
+        googleMapOptions = GoogleMapOptions().camera(cameraPosition).liteMode(liteMode).compassEnabled(disableDefaultUI).zoomControlsEnabled(disableDefaultUI).mapToolbarEnabled(disableDefaultUI)
+
         if (mapId != null) {
             googleMapOptions?.mapId(mapId!!)
         }

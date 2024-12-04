@@ -268,7 +268,8 @@ public class Map {
     func buildTile(tileLayer: TileLayer) -> GMSTileLayer {
         // Implement GMSTileURLConstructor
         let urls: GMSTileURLConstructor = { (x, y, zoom) in
-            let zoomLimit = (tileLayer.maxZoom != nil) ? tileLayer.maxZoom! + 1 : 19
+            // For some reason zoom here is equal to JS Map Zoom plus 2 !
+            let zoomLimit = (tileLayer.maxZoom != nil) ? tileLayer.maxZoom! + 1 : 21
             // avoids making http get calls for tiles beyond the limit
             if zoom > zoomLimit {
                 print("Zoom level \(zoom) exceeds limit of \(zoomLimit). Not fetching new tiles.")
@@ -295,27 +296,22 @@ public class Map {
         return newLayer
     }
     /*
-    func buildTile(tileLayer: TileLayer) -> GMSTileLayer {
+    func buildTile(tileLayer: TileLayer) -> GMSTileLayer { // Without maxZoom
         // Implement GMSTileURLConstructor
         // Returns a Tile based on the x,y,zoom coordinates, and the requested floor
         let urls: GMSTileURLConstructor = { (x, y, zoom) in
             var url = tileLayer.tileUrl ?? ""
-
             // Replace placeholders with actual values
             url = url.replacingOccurrences(of: "{zoom}", with: "\(zoom)")
             url = url.replacingOccurrences(of: "{x}", with: "\(x)")
             url = url.replacingOccurrences(of: "{y}", with: "\(y)")
-
             print("Constructed URL: \(url)")
             return URL(string: url)
         }
-
         // Create the GMSTileLayer
         let newLayer = GMSURLTileLayer(urlConstructor: urls)
-
         newLayer.opacity = tileLayer.opacity ?? 1
         newLayer.zIndex = tileLayer.zIndex ?? 1
-
         return newLayer
     }
     */

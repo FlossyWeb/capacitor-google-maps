@@ -277,6 +277,12 @@ export interface GoogleMapConfig extends google.maps.MapOptions {
    * @since 5.4.0
    */
   iOSMapId?: string;
+  /**
+   * Enables or Disables default UI buttons like Compass & My Location => Only usefull for Android.
+   *
+   * @default false
+   */
+  disableDefaultUI?: boolean;
 }
 
 /**

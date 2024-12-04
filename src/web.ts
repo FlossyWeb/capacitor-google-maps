@@ -304,8 +304,13 @@ export class CapacitorGoogleMapsWeb
   }
 
   async addTileLayer(_args: AddTileOverlayArgs): Promise<{ id: string }>  {
+    const map = this.maps[_args.id].map;
+    const maxZoom = (_args.tileLayer.maxZoom) ? _args.tileLayer.maxZoom : 0;
+    // const currentZoom = map.getZoom() || 0;
+    // console.warn(currentZoom, maxZoom);
     const tileLayer = new google.maps.ImageMapType({
       getTileUrl: (coord, zoom) => {
+        if(zoom > maxZoom) return null;
         const url = _args.tileLayer.tileUrl
           .replace('{x}', coord.x.toString())
           .replace('{y}', coord.y.toString())
@@ -313,30 +318,31 @@ export class CapacitorGoogleMapsWeb
         return url;
       },
       tileSize: new google.maps.Size(256, 256),
+      maxZoom: maxZoom,
     });
     if (this.currentTileLayer) {
       this.currentTileLayer = tileLayer;
     }
     // if (this.maps[_args.id].tileLayer) { // Remove previous overlay
-    //   this.maps[_args.id].map.overlayMapTypes.removeAt(0);
+    //   map.overlayMapTypes.removeAt(0);
     // }
     if(_args.tileLayer.opacity) tileLayer.setOpacity(_args.tileLayer.opacity);
     // Draw Tiles
-    this.maps[_args.id].map.overlayMapTypes.push(tileLayer);
+    map.overlayMapTypes.push(tileLayer);
     // this.maps[_args.id].tileLayer = tileLayer;
     /*
     if (_args.tileLayer?.debug) { // Optionally, you can set debug mode if needed
-      this.maps[_args.id].map.addListener('mousemove', function (event: any) {
+      map.addListener('mousemove', function (event: any) {
         console.log('Mouse Coordinates: ', event.latLng.toString());
       });
     }
     if (!_args.tileLayer?.visible) { // Set visibility based on the 'visible' property
-      this.maps[_args.id].map.overlayMapTypes.pop(); // Remove the last overlay (customMapOverlay) from the stack
+      map.overlayMapTypes.pop(); // Remove the last overlay (customMapOverlay) from the stack
     }
     if (_args.tileLayer?.zIndex !== undefined) { // Set zIndex based on the 'zIndex' property
       // Move the customMapOverlay to the specified index in the overlay stack
-      this.maps[_args.id].map.overlayMapTypes.setAt(
-        this.maps[_args.id].map.overlayMapTypes.getLength() - 1,
+      map.overlayMapTypes.setAt(
+        map.overlayMapTypes.getLength() - 1,
         tileLayer,
       );
     }
@@ -628,13 +634,11 @@ export class CapacitorGoogleMapsWeb
     const opts: google.maps.GroundOverlayOptions = {
       map: map,
       opacity: overlay.opacity,
-      // clickable: overlay.clickable ?? false,
+      clickable: false,
     };
-  
+
     return opts;
   }
-  
-  
 
   async addPolygons(args: AddPolygonsArgs): Promise<{ ids: string[] }> {
     const polygonIds: string[] = [];
@@ -978,10 +982,10 @@ export class CapacitorGoogleMapsWeb
           : null,
         anchor: marker.iconAnchor
           ? new google.maps.Point(marker.iconAnchor.x, marker.iconAnchor.y)
-          : new google.maps.Point(0, 0),
+          : null,
         origin: marker.iconOrigin
           ? new google.maps.Point(marker.iconOrigin.x, marker.iconOrigin.y)
-          : new google.maps.Point(0, 0),
+          : null,
       };
     }
 

@@ -19,7 +19,7 @@ public struct TileLayer {
       self.tileUrl = tileUrl
       self.opacity = opacityNumber.floatValue
       self.zIndex = Int32((fromJSObject["zIndex"] as? Int) ?? 1)
-      self.maxZoom = Int32((fromJSObject["maxZoom"] as? Int) ?? 19)
+      self.maxZoom = Int32((fromJSObject["maxZoom"] as? Int) ?? 21)
     }
 
 }

@@ -192,6 +192,18 @@ class CapacitorGoogleMap(
         }
     }
 
+    fun setMyLocationButtonEnabled(enabled: Boolean, callback: (error: GoogleMapsError?) -> Unit) {
+        try {
+            googleMap ?: throw GoogleMapNotAvailable()
+            CoroutineScope(Dispatchers.Main).launch {
+                var UiSettings = googleMap?.getUiSettings()
+                UiSettings?.setMyLocationButtonEnabled(enabled)
+                callback(null)
+            }
+        } catch (e: GoogleMapsError) {
+            callback(e)
+        }
+    }
 
     private fun buildTileProvider(tileOverlay: CapacitorGoogleMapTileOverlay): TileProvider {
         // Create a TileProvider for the tile layer
@@ -1341,7 +1353,7 @@ class CapacitorGoogleMap(
 
         return polygonOptions
     }
-    
+
     private fun buildPolyline(line: CapacitorGoogleMapPolyline): PolylineOptions {
         val polylineOptions = PolylineOptions()
         polylineOptions.width(line.strokeWidth * this.config.devicePixelRatio)
@@ -1425,6 +1437,7 @@ class CapacitorGoogleMap(
         )
         overlayOptions.positionFromBounds(bounds)
         overlayOptions.transparency(1 - overlay.opacity) // Convert opacity to transparency
+        // overlayOptions.cliquable = false // This is the default value
 
         if (!overlay.imageUrl.isNullOrEmpty()) {
             try {

@@ -1095,6 +1095,7 @@ For iOS and Android only the config options declared on <a href="#googlemapconfi
 | **`mapId`**            | <code>string</code>                       | A map id associated with a specific map style or feature. [Use Map IDs](https://developers.google.com/maps/documentation/get-map-id) Only for Web.        |                    | 5.4.0 |
 | **`androidMapId`**     | <code>string</code>                       | A map id associated with a specific map style or feature. [Use Map IDs](https://developers.google.com/maps/documentation/get-map-id) Only for Android.    |                    | 5.4.0 |
 | **`iOSMapId`**         | <code>string</code>                       | A map id associated with a specific map style or feature. [Use Map IDs](https://developers.google.com/maps/documentation/get-map-id) Only for iOS.        |                    | 5.4.0 |
+| **`disableDefaultUI`** | <code>boolean</code>                      | Enables or Disables default UI buttons like Compass & My Location =&gt; Only usefull for Android.                                                         | <code>false</code> |       |
 
 
 #### LatLng

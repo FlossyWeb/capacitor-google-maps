@@ -68,11 +68,13 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
     private var maps = [String: Map]()
     private var isInitialized = false
     var mapView: GMSMapView?
+    private var locationManager = CLLocationManager()
+
 
     func checkLocationPermission() -> String {
         let locationState: String
 
-        switch CLLocationManager.authorizationStatus() {
+        switch self.locationManager.authorizationStatus() {
         case .notDetermined:
             locationState = "prompt"
         case .restricted, .denied:
@@ -498,7 +500,7 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
             handleError(call, error: error)
         }
     }
-    
+
     // @objc func updateMapOptions(_ call: CAPPluginCall) {
     //     do {
     //         guard let id = call.getString("id") else {
@@ -788,7 +790,6 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
             handleError(call, error: error)
         }
     }
-    
 
     @objc func removeAllGroundOverlays(_ call: CAPPluginCall) {
         guard let id = call.getString("id") else {
@@ -1082,7 +1083,9 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
                 throw GoogleMapErrors.invalidArguments("enabled is missing")
             }
 
-            if enabled && checkLocationPermission() != "granted" {
+            let locationStatus = checkLocationPermission()
+
+            if enabled &&  !(locationStatus == "granted" || locationStatus == "prompt") {
                 throw GoogleMapErrors.permissionsDeniedLocation
             }
 
