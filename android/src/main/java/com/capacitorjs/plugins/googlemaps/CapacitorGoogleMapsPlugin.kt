@@ -410,9 +410,10 @@ class CapacitorGoogleMapsPlugin : Plugin(), OnMapsSdkInitializedCallback {
         val zoom = options.optDouble("zoom", -1.0)
         val center = options.getJSObject("center", null)
         val styles = options.optJSONArray("styles")
+        val disableDefaultUI = options.getBoolean("disableDefaultUI")
 
         val map = maps[id] ?: return
-        map.updateMapOptions(zoom, center, styles) { error ->
+        map.updateMapOptions(zoom, center, styles, disableDefaultUI) { error ->
             if (error != null) {
                 call.reject(error.message ?: "Error updating map options")
             } else {

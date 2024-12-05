@@ -28,12 +28,14 @@ export interface MapStyleElement {
 }
 /**
  * An interface representing the map options attributes.
+ * disableDefaultUI is Android only as there is no need for iOS & Web.
  */
 export interface MapOptions {
   zoom?: number;
   center?: LatLng;
   // styles?: MapStyleElement[] | string;
   styles?: google.maps.MapTypeStyle[];
+  disableDefaultUI?: boolean;
 }
 
 /**

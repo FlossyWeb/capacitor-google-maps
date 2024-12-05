@@ -1185,12 +1185,14 @@ https://tools.ietf.org/html/rfc7946#section-3.1.2
 #### MapOptions
 
 An interface representing the map options attributes.
+disableDefaultUI is Android only as there is no need for iOS & Web.
 
-| Prop         | Type                                      |
-| ------------ | ----------------------------------------- |
-| **`zoom`**   | <code>number</code>                       |
-| **`center`** | <code><a href="#latlng">LatLng</a></code> |
-| **`styles`** | <code>MapTypeStyle[]</code>               |
+| Prop                   | Type                                      |
+| ---------------------- | ----------------------------------------- |
+| **`zoom`**             | <code>number</code>                       |
+| **`center`**           | <code><a href="#latlng">LatLng</a></code> |
+| **`styles`**           | <code>MapTypeStyle[]</code>               |
+| **`disableDefaultUI`** | <code>boolean</code>                      |
 
 
 #### GroundOverlay

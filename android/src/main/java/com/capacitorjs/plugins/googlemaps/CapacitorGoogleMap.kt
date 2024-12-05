@@ -347,7 +347,7 @@ class CapacitorGoogleMap(
     }
 
 
-    fun updateMapOptions(zoom: Double?, center: JSObject?, styles: JSONArray?, callback: (error: GoogleMapsError?) -> Unit) {
+    fun updateMapOptions(zoom: Double?, center: JSObject?, styles: JSONArray?, disableDefaultUI: Boolean?, callback: (error: GoogleMapsError?) -> Unit) {
         try {
             val map = googleMap ?: throw GoogleMapNotAvailable()
 
@@ -370,6 +370,13 @@ class CapacitorGoogleMap(
                     if (!success) {
                         throw GoogleMapsError("Failed to set map style")
                     }
+                }
+
+                disableDefaultUI?.let { // Force appearance of default UI buttons
+                    map.uiSettings?.isMyLocationButtonEnabled = disableDefaultUI
+                    map.uiSettings?.isCompassEnabled = disableDefaultUI
+                    map.uiSettings?.isMapToolbarEnabled = disableDefaultUI
+                    map.uiSettings?.isZoomControlsEnabled = disableDefaultUI
                 }
 
                 callback(null)
