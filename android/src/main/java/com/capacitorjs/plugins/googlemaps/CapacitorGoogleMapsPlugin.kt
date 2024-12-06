@@ -154,14 +154,6 @@ class CapacitorGoogleMapsPlugin : Plugin(), OnMapsSdkInitializedCallback {
             val newMap = CapacitorGoogleMap(id, config, this)
             maps[id] = newMap
 
-            if(configObject.has("disableDefaultUI")) {
-                val disableDefaultUI = configObject.getBoolean("disableDefaultUI")
-                newMap.setMyLocationButtonEnabled(disableDefaultUI) { err ->
-                    if (err != null) {
-                        throw err
-                    }
-                }
-            }
             call.resolve()
         } catch (e: GoogleMapsError) {
             handleError(call, e)

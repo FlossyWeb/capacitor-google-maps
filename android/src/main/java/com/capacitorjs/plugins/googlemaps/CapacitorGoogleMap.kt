@@ -192,19 +192,6 @@ class CapacitorGoogleMap(
         }
     }
 
-    fun setMyLocationButtonEnabled(enabled: Boolean, callback: (error: GoogleMapsError?) -> Unit) {
-        try {
-            googleMap ?: throw GoogleMapNotAvailable()
-            CoroutineScope(Dispatchers.Main).launch {
-                var UiSettings = googleMap?.getUiSettings()
-                UiSettings?.setMyLocationButtonEnabled(enabled)
-                callback(null)
-            }
-        } catch (e: GoogleMapsError) {
-            callback(e)
-        }
-    }
-
     private fun buildTileProvider(tileOverlay: CapacitorGoogleMapTileOverlay): TileProvider {
         // Create a TileProvider for the tile layer
         return object : UrlTileProvider(256, 256) {
@@ -373,10 +360,11 @@ class CapacitorGoogleMap(
                 }
 
                 disableDefaultUI?.let { // Force appearance of default UI buttons
-                    map.uiSettings?.isMyLocationButtonEnabled = disableDefaultUI
-                    map.uiSettings?.isCompassEnabled = disableDefaultUI
-                    map.uiSettings?.isMapToolbarEnabled = disableDefaultUI
-                    map.uiSettings?.isZoomControlsEnabled = disableDefaultUI
+                    val enable = !it
+                    map.uiSettings?.setMyLocationButtonEnabled(false)
+                    map.uiSettings?.setCompassEnabled(false)
+                    map.uiSettings?.setMapToolbarEnabled(false)
+                    map.uiSettings?.setZoomControlsEnabled(false)
                 }
 
                 callback(null)
