@@ -433,6 +433,11 @@ export class CapacitorGoogleMapsWeb
       googleMapOptions.styles = _args.options.styles;
     }
 
+    if (_args.options.disableDefaultUI !== undefined) {
+      googleMapOptions.disableDefaultUI = _args.options.disableDefaultUI;
+      googleMapOptions.streetViewControl = false; // Force no streetViewControl
+    }
+
     map.map.setOptions(googleMapOptions);
   }
 

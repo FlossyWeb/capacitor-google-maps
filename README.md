@@ -1185,7 +1185,7 @@ https://tools.ietf.org/html/rfc7946#section-3.1.2
 #### MapOptions
 
 An interface representing the map options attributes.
-disableDefaultUI is Android only as there is no need for iOS & Web.
+disableDefaultUI is Android & Web only as there is no need for iOS.
 
 | Prop                   | Type                                      |
 | ---------------------- | ----------------------------------------- |

@@ -28,7 +28,7 @@ export interface MapStyleElement {
 }
 /**
  * An interface representing the map options attributes.
- * disableDefaultUI is Android only as there is no need for iOS & Web.
+ * disableDefaultUI is Android & Web only as there is no need for iOS.
  */
 export interface MapOptions {
   zoom?: number;
