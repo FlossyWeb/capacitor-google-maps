@@ -988,6 +988,7 @@ class CapacitorGoogleMap(
                 clusterManager = null
 
                 googleMap?.setOnMarkerClickListener(this@CapacitorGoogleMap)
+                googleMap?.setOnMarkerDragListener(this@CapacitorGoogleMap)
 
                 // add existing markers back to the map
                 if (markers.isNotEmpty()) {
