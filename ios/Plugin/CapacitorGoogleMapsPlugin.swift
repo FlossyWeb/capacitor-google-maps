@@ -68,11 +68,13 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
     private var maps = [String: Map]()
     private var isInitialized = false
     var mapView: GMSMapView?
-
+    private var locationManager = CLLocationManager()
+    
+    
     func checkLocationPermission() -> String {
         let locationState: String
 
-        switch CLLocationManager.authorizationStatus() {
+        switch self.locationManager.authorizationStatus {
         case .notDetermined:
             locationState = "prompt"
         case .restricted, .denied:
@@ -1080,8 +1082,10 @@ public class CapacitorGoogleMapsPlugin: CAPPlugin, GMSMapViewDelegate {
             guard let enabled = call.getBool("enabled") else {
                 throw GoogleMapErrors.invalidArguments("enabled is missing")
             }
+            
+            let locationStatus = checkLocationPermission()
 
-            if enabled && checkLocationPermission() != "granted" {
+            if enabled &&  !(locationStatus == "granted" || locationStatus == "prompt") {
                 throw GoogleMapErrors.permissionsDeniedLocation
             }
 
