@@ -227,7 +227,7 @@ class CapacitorGoogleMap(
                     .transparency(1f - tileOverlay.opacity)
                     .visible(true)
 
-                tileOverlay.maxZoom.let {
+                tileOverlay.zIndex.let {
                     tileOverlayOptions.zIndex(it.toFloat())
                 }
 

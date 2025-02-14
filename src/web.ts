@@ -339,6 +339,7 @@ export class CapacitorGoogleMapsWeb
     if (!_args.tileLayer?.visible) { // Set visibility based on the 'visible' property
       map.overlayMapTypes.pop(); // Remove the last overlay (customMapOverlay) from the stack
     }
+    */
     if (_args.tileLayer?.zIndex !== undefined) { // Set zIndex based on the 'zIndex' property
       // Move the customMapOverlay to the specified index in the overlay stack
       map.overlayMapTypes.setAt(
@@ -346,7 +347,6 @@ export class CapacitorGoogleMapsWeb
         tileLayer,
       );
     }
-    */
     const id = '' + this.currTileId;
     this.maps[_args.id].tiles[id] = tileLayer;
     this.currTileId++;

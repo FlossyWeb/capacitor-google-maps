@@ -1,6 +1,6 @@
 {
   "name": "@flossyweb/capacitor-google-maps",
-  "version": "6.0.4-beta.34",
+  "version": "6.0.4-beta.38",
   "description": "Google maps on Capacitor",
   "main": "dist/plugin.cjs.js",
   "module": "dist/esm/index.js",
